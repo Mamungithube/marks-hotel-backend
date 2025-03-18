@@ -13,7 +13,7 @@ class Employee(models.Model):
             if last_employee:
                 self.employee_id = str(int(last_employee.employee_id) + 1).zfill(4)
             else:
-                self.employee_id = "1000"  
+                self.employee_id = "1111"  
         super().save(*args, **kwargs)
 
     def __str__(self):
