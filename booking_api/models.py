@@ -29,7 +29,6 @@ class Room(models.Model):
 
 class RoomImage(models.Model):
     room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name='images')
-
     is_primary = models.BooleanField(default=False)
     
     def __str__(self):
@@ -74,7 +73,7 @@ class Booking(models.Model):
     booking_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     special_requests = models.TextField(blank=True)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    booking_room = models.ForeignKey(RoomType, on_delete=models.CASCADE)
     
     class Meta:
         ordering = ['-booking_date']
@@ -82,9 +81,4 @@ class Booking(models.Model):
     def __str__(self):
         return f"Booking {self.id} - {self.user.username} - {self.room.room_number}"
     
-    def save(self, *args, **kwargs):
-        # Calculate total price if not provided
-        if not self.total_price:
-            days = (self.check_out_date - self.check_in_date).days
-            self.total_price = self.room.room_type.price_per_night * days
-        super().save(*args, **kwargs)
+

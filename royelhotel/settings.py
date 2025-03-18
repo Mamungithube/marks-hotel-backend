@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'authontication',
     'review',
     'booking_api',
+    'employees',
     'rest_framework',
     'rest_framework.authtoken', 
     'django_filters',
