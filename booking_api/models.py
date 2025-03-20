@@ -63,7 +63,7 @@ class Booking(models.Model):
         ('cancelled', 'Cancelled'),
         ('completed', 'Completed'),
     )
-    
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings')
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='bookings')
     check_in_date = models.DateField()
@@ -73,12 +73,9 @@ class Booking(models.Model):
     booking_date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     special_requests = models.TextField(blank=True)
-    booking_room = models.ForeignKey(RoomType, on_delete=models.CASCADE)
-    
+
     class Meta:
         ordering = ['-booking_date']
-    
+
     def __str__(self):
         return f"Booking {self.id} - {self.user.username} - {self.room.room_number}"
-    
-

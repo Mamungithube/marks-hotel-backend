@@ -34,7 +34,7 @@ class RoomAmenityAdmin(admin.ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'room', 'check_in_date', 'check_out_date', 'status', 'booking_room')
+    list_display = ('id', 'user', 'room', 'check_in_date', 'check_out_date', 'status')
     list_filter = ('status', 'check_in_date', 'check_out_date')
     search_fields = ('user__username', 'room__room_number')
     date_hierarchy = 'booking_date'

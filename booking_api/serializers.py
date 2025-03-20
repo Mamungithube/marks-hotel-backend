@@ -80,5 +80,5 @@ class BookingSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'user_details', 'room', 'room_details', 
                   'room_type',  # ✅ এখানে যোগ করুন
                   'check_in_date', 'check_out_date', 'adults', 'children',
-                  'booking_date', 'status', 'special_requests', 'total_price']
-        read_only_fields = ['booking_date', 'status', 'total_price']
+                  'booking_date', 'status', 'special_requests']
+        read_only_fields = ['booking_date', 'status']
