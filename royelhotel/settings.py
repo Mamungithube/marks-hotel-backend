@@ -41,6 +41,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',  # ✅ টোকেন অথেনটিকেশন যোগ করো
         'rest_framework.authentication.SessionAuthentication',  # ✅ API Browsable জন্য Session
     ],
+        'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',  # ✅ অথেনটিকেশন ছাড়া কেউ অ্যাক্সেস পাবে না
+    ],
 }
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
@@ -74,7 +77,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+CORS_ALLOW_ALL_ORIGINS = True
 ROOT_URLCONF = 'royelhotel.urls'
 
 TEMPLATES = [

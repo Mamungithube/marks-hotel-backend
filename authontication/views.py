@@ -11,9 +11,12 @@ from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
+from rest_framework import status, viewsets, serializers
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
+from django.contrib.auth import logout
 from . import models
 from . import serializers
 
@@ -92,15 +95,7 @@ class UserLoginApiView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
 
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.views import APIView
-from django.contrib.auth import logout
 
 class UserLogoutApiView(APIView):
     authentication_classes = [TokenAuthentication]  # Require token authentication
@@ -116,25 +111,26 @@ class UserLogoutApiView(APIView):
         return Response({"message": "Logout successful"}, status=status.HTTP_204_NO_CONTENT)
 
 
-
 class ChangePasswordViewSet(viewsets.GenericViewSet):
     serializer_class = serializers.ChangePasswordSerializer
-    model = User
+    permission_classes = [IsAuthenticated]  # ✅ শুধুমাত্র অথেনটিকেটেড ইউজার অনুমতি পাবে
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        if not request.user.is_authenticated:  # ✅ অ্যানোনিমাস ইউজার চেক করা
+            return Response({"error": "Authentication required."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        user = request.user
+        serializer = self.get_serializer(data=request.data, context={"request": request})
 
         if serializer.is_valid():
-            user = request.user
-            if not user.check_password(serializer.validated_data['old_password']):
+            if not user.check_password(serializer.validated_data["old_password"]):
                 return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
             
-            user.set_password(serializer.validated_data['new_password'])
+            user.set_password(serializer.validated_data["new_password"])
             user.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({"message": "Password changed successfully!"}, status=status.HTTP_204_NO_CONTENT)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 # class UserProfileView(APIView):
 
