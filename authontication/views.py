@@ -158,4 +158,5 @@ class IsAdminStatusAPIView(APIView):
         user = request.user
         if user.is_staff:
             return Response({"is_admin" : True})
+        
         return Response({"is_admin" : False})

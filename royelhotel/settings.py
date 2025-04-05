@@ -30,6 +30,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5500",
     "http://localhost:3000",
 ]
+
 ALLOWED_HOSTS = []
 
 REST_FRAMEWORK = {
@@ -42,7 +43,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',  # ✅ API Browsable জন্য Session
     ],
         'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # ✅ অথেনটিকেশন ছাড়া কেউ অ্যাক্সেস পাবে না
+        'rest_framework.permissions.AllowAny',  # ✅ অথেনটিকেশন ছাড়া কেউ অ্যাক্সেস পাবে না
     ],
 }
 REST_FRAMEWORK = {
