@@ -149,7 +149,19 @@ class ChangePasswordViewSet(viewsets.GenericViewSet):
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
+from rest_framework import viewsets
+from django.contrib.auth import get_user_model
+from .serializers import UserSerializer
 
+User = get_user_model()
+
+from rest_framework import generics
+from django.contrib.auth.models import User
+from .serializers import UserSerializer
+
+class UserListAPIView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 # class IsAdminStatusAPIView(APIView):

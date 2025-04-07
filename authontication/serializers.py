@@ -52,7 +52,26 @@ class ChangePasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError({"confirm_password": "New password and confirm password do not match."})
         return data
 
-    
+
+
+from rest_framework import serializers
+from django.contrib.auth.models import User
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email']
+        
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # ব্রাউজেবল API তে সব ফিল্ড দেখানোর জন্য
+        representation['id'] = instance.id
+        representation['username'] = instance.username
+        representation['first_name'] = instance.first_name
+        representation['last_name'] = instance.last_name
+        representation['email'] = instance.email
+        return representation
+
 # # serializers.py
 # from rest_framework import serializers
 # from .models import CustomUser
