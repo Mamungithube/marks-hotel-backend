@@ -128,11 +128,13 @@ class AmenityViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'description']
+    
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.authentication import SessionAuthentication
 class BookingViewSet(viewsets.ModelViewSet):
     serializer_class = BookingSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [permissions.AllowAny]
+    authentication_classes = [TokenAuthentication, SessionAuthentication]  # উভয় অথেনটিকেশন যোগ করুন
+    permission_classes = [permissions.IsAuthenticated]  # AllowAny এর পরিবর্তে IsAuthenticated ব্যবহার করুন
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['status', 'room', 'check_in_date', 'check_out_date']
     ordering_fields = ['booking_date', 'check_in_date', 'check_out_date']

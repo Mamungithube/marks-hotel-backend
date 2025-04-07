@@ -6,6 +6,7 @@ class Employee(models.Model):
     address = models.TextField()
     phone_no = models.CharField(max_length=15)
     employee_id = models.CharField(max_length=4, unique=True, editable=False)
+    Salary = models.IntegerField(null=True)
 
     def save(self, *args, **kwargs):
         if not self.employee_id: 

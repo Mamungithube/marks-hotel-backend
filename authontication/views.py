@@ -113,6 +113,7 @@ class UserLogoutApiView(APIView):
 
 class ChangePasswordViewSet(viewsets.GenericViewSet):
     serializer_class = serializers.ChangePasswordSerializer
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]  # ✅ শুধুমাত্র অথেনটিকেটেড ইউজার অনুমতি পাবে
 
     def create(self, request, *args, **kwargs):
@@ -151,12 +152,23 @@ class ChangePasswordViewSet(viewsets.GenericViewSet):
 
 
 
+# class IsAdminStatusAPIView(APIView):
+#     permission_classes = [IsAuthenticatedOrReadOnly]
+    
+#     def get(self, request):
+#         user = request.user
+#         if user.is_staff:
+#             return Response({"is_admin" : True})
+        
+#         return Response({"is_admin" : False})
+    
 class IsAdminStatusAPIView(APIView):
     parser_classes = [IsAuthenticatedOrReadOnly]
     
     def get(self, request):
         user = request.user
-        if user.is_staff:
-            return Response({"is_admin" : True})
-        
-        return Response({"is_admin" : False})
+        return Response({
+            "is_admin": user.is_staff,
+            "user_id": user.id,
+            "username": user.username
+        })

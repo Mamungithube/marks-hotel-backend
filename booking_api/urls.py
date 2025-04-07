@@ -12,6 +12,7 @@ router.register(r'room-types', RoomTypeViewSet)
 router.register(r'rooms', RoomViewSet)
 router.register(r'amenities', AmenityViewSet)
 router.register(r'bookings', BookingViewSet, basename='booking')
+# router.register(r'AmenityView', AmenityViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
