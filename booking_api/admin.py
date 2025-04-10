@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 from .models import (
-    RoomType, Room, RoomImage, Amenity, 
+    RoomType, Room, Amenity, 
     RoomAmenity, Booking
 )
 
@@ -17,10 +17,10 @@ class RoomAdmin(admin.ModelAdmin):
     list_filter = ('room_type', 'capacity', 'floor', 'has_view', 'has_balcony')
     search_fields = ('room_number',)
 
-@admin.register(RoomImage)
-class RoomImageAdmin(admin.ModelAdmin):
-    list_display = ('room_type', 'is_primary')
-    list_filter = ('room_type', 'is_primary')
+# @admin.register(RoomImage)
+# class RoomImageAdmin(admin.ModelAdmin):
+#     list_display = ('room_type', 'is_primary')
+#     list_filter = ('room_type', 'is_primary')
 
 @admin.register(Amenity)
 class AmenityAdmin(admin.ModelAdmin):

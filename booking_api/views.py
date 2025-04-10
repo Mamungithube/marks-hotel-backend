@@ -8,11 +8,11 @@ from datetime import datetime
 from django.utils import timezone
 
 from .models import (
-    RoomType, Room, RoomImage, Amenity, 
+    RoomType, Room, Amenity, 
     RoomAmenity, Booking
 )
 from .serializers import (
-    RoomTypeSerializer, RoomSerializer, RoomImageSerializer,
+    RoomTypeSerializer, RoomSerializer,
     AmenitySerializer, BookingSerializer, UserSerializer
 )
 from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly

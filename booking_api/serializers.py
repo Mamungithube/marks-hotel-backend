@@ -3,7 +3,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import (
-    RoomType, Room, RoomImage, Amenity, 
+    RoomType, Room, Amenity, 
     RoomAmenity, Booking
 )
 from django.utils import timezone
@@ -19,19 +19,19 @@ class AmenitySerializer(serializers.ModelSerializer):
         model = Amenity
         fields = '__all__'
 
-class RoomImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RoomImage
-        fields = ['id', 'image', 'is_primary']
+# class RoomImageSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = RoomImage
+#         fields = ['id', 'is_primary']
 
 class RoomTypeSerializer(serializers.ModelSerializer):
-    images = RoomImageSerializer(many=True, read_only=True)
+    # images = RoomImageSerializer(many=True, read_only=True)
     amenities = serializers.SerializerMethodField()
     available_rooms = serializers.SerializerMethodField()
     
     class Meta:
         model = RoomType
-        fields = ['id', 'name', 'description', 'price_per_night', 'images', 'amenities', 'available_rooms']
+        fields = ['id', 'name', 'description', 'price_per_night', 'amenities', 'available_rooms']
     
     def get_amenities(self, obj):
         room_amenities = RoomAmenity.objects.filter(room_type=obj)

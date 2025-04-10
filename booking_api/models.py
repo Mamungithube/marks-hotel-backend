@@ -27,12 +27,12 @@ class Room(models.Model):
     def __str__(self):
         return f"{self.room_number} - {self.room_type.name}"
 
-class RoomImage(models.Model):
-    room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name='images')
-    is_primary = models.BooleanField(default=False)
+# class RoomImage(models.Model):
+#     room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name='images')
+#     is_primary = models.BooleanField(default=False)
     
-    def __str__(self):
-        return f"Image for {self.room_type.name}"
+#     def __str__(self):
+#         return f"Image for {self.room_type.name}"
 
 class Amenity(models.Model):
     name = models.CharField(max_length=100)
