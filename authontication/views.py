@@ -164,23 +164,22 @@ class UserListAPIView(generics.ListAPIView):
     serializer_class = UserSerializer
 
 
-# class IsAdminStatusAPIView(APIView):
-#     permission_classes = [IsAuthenticatedOrReadOnly]
+class IsAdminStatusAPIView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
     
+    def get(self, request, *args, **kwargs ):
+        user = request.user
+        if user.is_staff:
+            return Response({"is_admin" : True})
+        
+        return Response({"is_admin" : False})
+    
+# class IsAdminStatusAPIView(APIView):
+#     permission_classes = [IsAuthenticated]
+
 #     def get(self, request):
 #         user = request.user
-#         if user.is_staff:
-#             return Response({"is_admin" : True})
-        
-#         return Response({"is_admin" : False})
-    
-class IsAdminStatusAPIView(APIView):
-    parser_classes = [IsAuthenticatedOrReadOnly]
-    
-    def get(self, request):
-        user = request.user
-        return Response({
-            "is_admin": user.is_staff,
-            "user_id": user.id,
-            "username": user.username
-        })
+#         return Response({
+#             'is_admin': user.is_superuser,  # Django built-in
+#             'user_id': user.id
+#         })
