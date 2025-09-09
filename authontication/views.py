@@ -1,13 +1,11 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.core.mail import EmailMultiAlternatives
 from rest_framework.response import Response
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
@@ -18,6 +16,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import logout
 from . import models
+from . import utils
 from . import serializers
 
 class CustomerViewset(viewsets.ModelViewSet):
@@ -36,63 +35,83 @@ class RegisteredUsersCount(APIView):
 
 class UserRegistrationAPIView(APIView):
     serializer_class = serializers.RegistrationSerializer
-    # permission_classes = [AllowAny] 
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            token = default_token_generator.make_token(user)
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            confirm_link = f"https://marks-hotel.vercel.app/authontication/active/{uid}/{token}"
-            email_subject = "Confirm your email"
-            email_body = render_to_string('confirm_email.html', {'confirm_link': confirm_link})
-            email = EmailMultiAlternatives(email_subject, '', to=[user.email])
-            email.attach_alternative(email_body, "text/html")
+            user.is_active = False 
+            user.save()
+
+            profile, created = models.CustomUser.objects.get_or_create(user=user)
+            profile.otp = utils.generate_otp()  
+            profile.save()
+
+            email_subject = 'Welcome To Our Platform!'
+            email_body = render_to_string('welcome_email.html', {'username': user.username})
+
+            email = EmailMultiAlternatives(email_subject, '', 'mdmamun340921@gmail.com', [user.email])
+            email.attach_alternative(email_body, 'text/html')
             email.send()
-            return Response("Check your mail for confirmation", status=status.HTTP_201_CREATED)
+
+            return Response({'detail': 'Check your email for confirmation'}, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ResendOTPApiView(APIView):
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        user = get_object_or_404(User, email=email)
 
+        otp_code = utils.generate_otp()
+        user.profile.otp = otp_code
+        user.profile.save()
 
-def activate(request, uid64, token):
-    try:
-        uid = urlsafe_base64_decode(uid64).decode()
-        user = User._default_manager.get(pk=uid)
-    except(User.DoesNotExist):
-        user = None
+        send_mail(
+            'Your OTP Code : ',
+            f'Your New OTP Code Is : {otp_code}',
+            'mdmamun340921@gmail.com',
+            [email]
+        )
 
-    if user is not None and default_token_generator.check_token(user, token):
-        user.is_active = True
-        user.save()
-        return redirect("https://mark-s.netlify.app/loginpage.html")
-    else:
-        return redirect("https://mark-s.netlify.app/loginpage.html")
+        return Response({'Message' : 'OTP Has Been Resent To Your Email'}, status=status.HTTP_200_OK)
 
+class VerifyOTPApiView(APIView):
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        otp = request.data.get('otp')
+
+        user = get_object_or_404(User, email=email)
+        profile = user.profile
+
+        if profile.otp == otp:
+            user.is_active = True
+            user.save(update_fields=['is_active']) 
+            profile.otp = None
+            profile.save(update_fields=['otp']) 
+            return Response({'Message' : 'Account Activate Successfully'}, status=status.HTTP_200_OK)
+        return Response({'Error' : 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
 
 class UserLoginApiView(APIView):
-    # permission_classes = [AllowAny]
-    serializer_class = serializers.UserLoginSerializer
-    
+    serializer_class = serializers.LoginSerializer
+
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
+
         if serializer.is_valid():
             username = serializer.validated_data['username']
             password = serializer.validated_data['password']
-            
-            user = authenticate(username=username , password=password)
+            user = authenticate(username=username, password=password)
 
             if user:
-
-                token,_ = Token.objects.get_or_create(user=user)
                 login(request, user)
-                print(token.key)
-                return Response({"token": token.key, 'user_id': user.id}, status=status.HTTP_200_OK)
-                        
-            else:
-                return Response({"error": "Authentication failed"}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                serializer = serializers.UserLoginSerializer({
+                    'username': user.username
+                })
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            
+            return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 

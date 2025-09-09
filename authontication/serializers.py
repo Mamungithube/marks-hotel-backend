@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from . import models
+from .utils import generate_otp
 from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
+from django.core.mail import send_mail
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,34 +12,58 @@ class CustomerSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class RegistrationSerializer(serializers.ModelSerializer):
-    confirm_password = serializers.CharField(required = True)
+    confirm_password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password', 'confirm_password']
-    
-    def save(self):
-        username = self.validated_data['username']
-        first_name = self.validated_data['first_name']
-        last_name = self.validated_data['last_name']
-        email = self.validated_data['email']
-        password = self.validated_data['password']
-        password2 = self.validated_data['confirm_password']
+        fields = ['username', 'first_name', 'last_name', 'email', 'password', 'confirm_password', 'date_joined']
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
+
+    def validate(self, data):
+        if data['password'] != data['confirm_password']:
+            raise serializers.ValidationError("Passwords do not match")
+        return data
+
+    def create(self, validated_data):
+        validated_data.pop('confirm_password')
+        user = User.objects.create_user(**validated_data)
+        user.is_active = False 
+        user.save()
+
+        otp_code = generate_otp()
+        models.CustomUser.objects.create(user=user, otp=otp_code)
+
+        email_subject = 'Your OTP Code : '
+        email_body = f'Your OTP Code Is : {otp_code}'
+        send_mail(
+            email_subject,
+            email_body,
+            'mdmamun340921@gmail.com', 
+            [user.email]
+        )
         
-        if password != password2:
-            raise serializers.ValidationError({'error' : "Password Doesn't Mactched"})
-        if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError({'error' : "Email Already exists"})
-        account = User(username = username, email=email, first_name = first_name, last_name = last_name)
-        print(account)
-        account.set_password(password)
-        account.is_active = False
-        account.save()
-        return account
+        return user
 
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
 
-class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField(required = True)
-    password = serializers.CharField(required = True)
+class UserLoginSerializer(serializers.ModelSerializer):
+    tokens = serializers.SerializerMethodField()
+    
+    def get_tokens(self, obj):
+        user = User.objects.get(username=obj['username'])
+        refresh = RefreshToken.for_user(user)
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+    
+    class Meta:
+        model = User
+        fields = ['username', 'tokens']
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True, write_only=True)

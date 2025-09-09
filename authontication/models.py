@@ -11,10 +11,12 @@ class Customer(models.Model):
         return f"{self.user.first_name} {self.user.last_name}"
     
 class CustomUser(models.Model):
-    username = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     email = models.CharField(max_length=200)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-
+    otp = models.CharField(max_length=6, blank=True, null=True)
+    is_verified = models.BooleanField(default=False)
+    
     def __str__(self):
-        return self.username.username
+        return self.user.username
