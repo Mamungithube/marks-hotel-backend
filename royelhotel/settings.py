@@ -35,6 +35,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:5500",
     "http://localhost:3000",
+    "https://marks-hotel-backend.onrender.com",
+    "https://*.onrender.com",
 ]
 ALLOWED_HOSTS = [
     '127.0.0.1',
