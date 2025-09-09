@@ -246,3 +246,19 @@ def stripe_webhook(request):
             booking.save()
 
     return HttpResponse(status=200)
+
+
+from rest_framework.views import APIView
+
+class CreatePaymentIntent(APIView):
+    def post(self, request):
+        amount = request.data.get("amount")  # টাকার পরিমাণ (সেন্টে পাঠাতে হবে)
+        try:
+            intent = stripe.PaymentIntent.create(
+                amount=int(amount),
+                currency="usd",
+                payment_method_types=["card"],
+            )
+            return Response({"clientSecret": intent.client_secret})
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
