@@ -108,7 +108,7 @@ TEMPLATES = [
 ]
 
 # WSGI_APPLICATION = 'royelhotel.wsgi.application'
-WSGI_APPLICATION = 'royelhotel.wsgi.app'
+WSGI_APPLICATION = 'royelhotel.wsgi.application'
 
 
 # Database
