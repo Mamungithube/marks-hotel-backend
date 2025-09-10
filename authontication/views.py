@@ -7,7 +7,7 @@ from django.core.mail import EmailMultiAlternatives
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User
 from rest_framework import status, viewsets, serializers
 from rest_framework.authentication import TokenAuthentication
@@ -117,17 +117,17 @@ class UserLoginApiView(APIView):
 
 
 class UserLogoutApiView(APIView):
-    authentication_classes = [TokenAuthentication]  # Require token authentication
-    permission_classes = [IsAuthenticated]  # Only authenticated users can logout
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        user = request.user
-        if hasattr(user, 'auth_token'):
-            user.auth_token.delete()  # Delete the authentication token
-        
-        logout(request)  # Log out the user (if session-based authentication is used)
-
-        return Response({"message": "Logout successful"}, status=status.HTTP_204_NO_CONTENT)
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            logout(request)
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class ChangePasswordViewSet(viewsets.GenericViewSet):
