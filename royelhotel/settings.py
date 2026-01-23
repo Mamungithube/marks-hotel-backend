@@ -42,8 +42,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     '.vercel.app',
-    '.onrender.com',       # ✅ Render এর ডোমেইন
-    'marks-hotel-backend.onrender.com',  # ✅ নির্দিষ্ট Render সার্ভিস ডোমেইন
+    '.onrender.com', 
+    'marks-hotel-backend.onrender.com',  
 ]
 
 
@@ -70,11 +70,6 @@ REST_FRAMEWORK = {
 # Application definition
 
 INSTALLED_APPS = [
-    "corsheaders",
-    'authontication',
-    'review',
-    'booking_api',
-    'employees',
     'rest_framework',
     'django_filters',
     'django.contrib.admin',
@@ -84,6 +79,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework_simplejwt',
+    "corsheaders",
+
+    # Custom Apps
+    'chatbot',
+    'authontication',
+    'review',
+    'booking_api',
+    'employees',
+    'finance_accounting',
+    'notification',
+    'room_management',
 ]
 
 MIDDLEWARE = [
@@ -151,22 +157,22 @@ SIMPLE_JWT = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres.gpjqhzbcaissxwxnvsym',
-        'PASSWORD': env('PASSWORD'),
-        'HOST': 'aws-0-ap-southeast-1.pooler.supabase.com',
-        'PORT': '6543'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres.gpjqhzbcaissxwxnvsym',
+#         'PASSWORD': env('PASSWORD'),
+#         'HOST': 'aws-0-ap-southeast-1.pooler.supabase.com',
+#         'PORT': '6543'
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -186,7 +192,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+AUTH_USER_MODEL = 'authontication.User'
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 

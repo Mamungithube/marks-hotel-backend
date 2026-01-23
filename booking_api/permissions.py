@@ -1,31 +1,31 @@
-# booking_api/permissions.py
+# # booking_api/permissions.py
 
-from rest_framework import permissions
+# from rest_framework import permissions
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
-    """
-    Custom permission to only allow owners of an object to edit it.
-    """
+# class IsOwnerOrReadOnly(permissions.BasePermission):
+#     """
+#     Custom permission to only allow owners of an object to edit it.
+#     """
     
-    def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request
-        if request.method in permissions.SAFE_METHODS:
-            return True
+#     def has_object_permission(self, request, view, obj):
+#         # Read permissions are allowed to any request
+#         if request.method in permissions.SAFE_METHODS:
+#             return True
         
-        # Write permissions are only allowed to the owner
-        if hasattr(obj, 'user'):
-            return obj.user == request.user
-        elif hasattr(obj, 'booking'):
-            return obj.booking.user == request.user
+#         # Write permissions are only allowed to the owner
+#         if hasattr(obj, 'user'):
+#             return obj.user == request.user
+#         elif hasattr(obj, 'booking'):
+#             return obj.booking.user == request.user
         
-        return False
+#         return False
 
-class IsAdminOrReadOnly(permissions.BasePermission):
+# class IsAdminOrReadOnly(permissions.BasePermission):
     
-    def has_permission(self, request, view):
-        # Read permissions are allowed to any request
-        if request.method in permissions.SAFE_METHODS:
-            return True
+#     def has_permission(self, request, view):
+#         # Read permissions are allowed to any request
+#         if request.method in permissions.SAFE_METHODS:
+#             return True
         
-        # Write permissions are only allowed to admin users
-        return request.user and request.user.is_staff
+#         # Write permissions are only allowed to admin users
+#         return request.user and request.user.is_staff
