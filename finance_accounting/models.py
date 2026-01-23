@@ -13,7 +13,7 @@ from authontication.models import User
 from booking_api.models import Booking
 from employees.models import Employee
 from booking_api.models import Payment
-from review.models import MaintenanceRequest
+from housekeeping.models import MaintenanceRequest
 
 
 # ==========================================

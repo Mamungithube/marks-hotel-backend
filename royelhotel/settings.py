@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     'finance_accounting',
     'notification',
     'room_management',
+    'housekeeping',
 ]
 
 MIDDLEWARE = [

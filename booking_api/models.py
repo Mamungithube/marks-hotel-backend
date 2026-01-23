@@ -9,7 +9,8 @@ import uuid
 from datetime import timedelta
 from authontication.models import TimeStampedModel, SoftDeleteModel
 from authontication.models import User
-from room_management.models import Room, RoomType
+from room_management.models import Room
+
 
 
 # ==========================================

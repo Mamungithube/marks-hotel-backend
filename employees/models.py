@@ -7,7 +7,7 @@ from django.db.models import Q, F
 from decimal import Decimal
 import uuid
 from datetime import timedelta
-from authontication.models import TimeStampedModel, SoftDeleteModel
+from authontication.models import SoftDeleteModel
 from authontication.models import User
 
 
