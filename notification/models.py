@@ -81,57 +81,6 @@ class Notification(SoftDeleteModel):
         self.save()
 
 
-class ActivityLog(models.Model):
-    """
-    System activity logging - Audit trail
-    """
-    ACTION_TYPE_CHOICES = (
-        ('create', _('Create')),
-        ('update', _('Update')),
-        ('delete', _('Delete')),
-        ('login', _('Login')),
-        ('logout', _('Logout')),
-        ('view', _('View')),
-    )
-    
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    
-    # Who performed the action
-    user = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='activity_logs'
-    )
-    
-    # What was the action
-    action_type = models.CharField(max_length=20, choices=ACTION_TYPE_CHOICES)
-    model_name = models.CharField(max_length=100)
-    object_id = models.CharField(max_length=100)
-    description = models.TextField()
-    
-    # When and where
-    timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
-    ip_address = models.GenericIPAddressField(null=True, blank=True)
-    user_agent = models.TextField(blank=True)
-    
-    # Changed data (store as JSON if needed)
-    old_values = models.JSONField(null=True, blank=True)
-    new_values = models.JSONField(null=True, blank=True)
-    
-    class Meta:
-        verbose_name = _('activity log')
-        verbose_name_plural = _('activity logs')
-        db_table = 'activity_logs'
-        ordering = ['-timestamp']
-        indexes = [
-            models.Index(fields=['user', 'timestamp']),
-            models.Index(fields=['model_name', 'object_id']),
-            models.Index(fields=['action_type', 'timestamp']),
-        ]
-    
-    def __str__(self):
-        return f"{self.user} - {self.action_type} - {self.model_name}"
 
 
 # ==========================================
