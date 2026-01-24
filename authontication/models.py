@@ -1,5 +1,4 @@
-# ==========================================
-# COMPLETE PROFESSIONAL HOTEL MANAGEMENT MODELS
+# authenticate /models.py
 # ==========================================
 
 from django.db import models
