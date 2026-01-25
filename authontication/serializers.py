@@ -225,8 +225,8 @@ class OTPVerificationSerializer(serializers.Serializer):
         except User.DoesNotExist:
             raise serializers.ValidationError("Invalid email address.")
         
-        if user.is_verified:
-            raise serializers.ValidationError("Account already verified.")
+        # if user.is_verified:
+        #     raise serializers.ValidationError("Account already verified.")
         
         if not user.otp or user.otp != otp:
             raise serializers.ValidationError("Invalid OTP.")
@@ -248,8 +248,8 @@ class ResendOTPSerializer(serializers.Serializer):
         """Check if user exists"""
         try:
             user = User.objects.get(email=value.lower())
-            if user.is_verified:
-                raise serializers.ValidationError("Account already verified.")
+            # if user.is_verified:
+            #     raise serializers.ValidationError("Account already verified.")
         except User.DoesNotExist:
             raise serializers.ValidationError("Email not registered.")
         
