@@ -5,12 +5,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator, EmailValidator
 from django.utils.translation import gettext_lazy as _
-from django.utils import timezone
-from django.db.models import Q, F
 from decimal import Decimal
-import uuid
-from datetime import timedelta
-from authontication.models import TimeStampedModel, SoftDeleteModel
+from authontication.models import SoftDeleteModel
 
 # ==========================================
 # 3. ROOM MANAGEMENT MODELS
@@ -27,7 +23,7 @@ class RoomType(SoftDeleteModel):
     
     # Pricing
     base_price = models.DecimalField(
-        _('base price per night'),
+        _('base price per night'),  
         max_digits=10,
         decimal_places=2,
         validators=[MinValueValidator(Decimal('0.01'))]

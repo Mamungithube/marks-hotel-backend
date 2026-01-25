@@ -2,18 +2,13 @@
 # ==========================================
 
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator, EmailValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
-from django.utils import timezone
-from django.db.models import Q, F
-from decimal import Decimal
-import uuid
-from datetime import timedelta
-from authontication.models import TimeStampedModel, SoftDeleteModel
+from authontication.models import SoftDeleteModel
 from room_management.models import Room
 from employees.models import Employee
 from authontication.models import User
+from decimal import Decimal
 
 # ==========================================
 # 7. HOUSEKEEPING & MAINTENANCE MODELS

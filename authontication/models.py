@@ -3,11 +3,9 @@
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator, EmailValidator
+from django.core.validators import RegexValidator, EmailValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.db.models import Q, F
-from decimal import Decimal
 import uuid
 from datetime import timedelta
 
