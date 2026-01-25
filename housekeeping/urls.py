@@ -1,4 +1,4 @@
-# review/urls.py
+# housekeeping/urls.py
 # ==========================================
 
 """
@@ -7,10 +7,10 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
-router.register('', views.ReviewViewSet, basename='review')
-router.register('contact', views.ContactMessageViewSet, basename='contact')
+router.register('tasks', views.HousekeepingTaskViewSet, basename='housekeeping')
+router.register('maintenance', views.MaintenanceRequestViewSet, basename='maintenance')
 
-app_name = 'review'
+app_name = 'housekeeping'
 
 urlpatterns = [
     path('', include(router.urls)),
