@@ -153,22 +153,24 @@ SIMPLE_JWT = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'postgres',
-#         'USER': 'postgres.gpjqhzbcaissxwxnvsym',
-#         'PASSWORD': env('PASSWORD'),
-#         'HOST': 'aws-0-ap-southeast-1.pooler.supabase.com',
-#         'PORT': '6543'
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME', default='marks_hotel_db'),
+        'USER': env('DB_USER', default='marks_hotel_user'),
+        'PASSWORD': env('DB_PASSWORD', default=''),
+        'HOST': env('DB_HOST', default='db'),
+        'PORT': env('DB_PORT', default='5432'),
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
